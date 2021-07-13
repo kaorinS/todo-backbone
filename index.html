@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        TODO LIST(jQuery)
+    </title>
+    <link rel="stylesheet" href="./dist/css/style.css">
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/bb3faf1fb5.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <!-- header -->
+    <header class="l-header">
+        <div class="p-header">
+            <h1 class="p-header__title">TODO<span class="p-header__pad">!!!</span></h1>
+        </div>
+    </header>
+
+    <!-- main -->
+    <main class="l-main">
+        <div class="p-main">
+            <!-- todo追加 -->
+            <form id="js-add_todo" class="p-addTodo">
+            </form>
+
+            <!-- 検索 -->
+            <div class="c-inputArea p-searchBox">
+            </div>
+
+            <!-- todoリスト -->
+            <ul class="p-todoList js-todo_list">
+            </ul>
+        </div>
+        <!-- template -->
+        <script id="template-form" type="text/template">
+            <div class="p-addTodo__inputArea">
+                <% if(hasError){ %>
+                <span class="p-addTodo__error js-toggle-error"><%= errorMsg %></span>
+                <% } %>
+                <input type="text" class="c-inputArea p-addTodo__inputText js-get-val" placeholder="TODO内容を書く">
+            </div>
+            <button class="p-addTodo__btn js-add-todo">
+                TODO 追加!!!
+            </button>
+        </script>
+
+        <script id="template-search" type="text/template">
+            <i class="fas fa-search p-searchBox__icon"></i>
+            <input type="text" class="p-searchBox__input js-search" value="" placeholder="キーワードを入力する">
+        </script>
+
+        <script id="template-todo_list" type="text/template">
+            <% if(isShow){ %>
+            <li class="p-listItem <% if(isDone){ %>p-doneItem<% }else{ %>p-todoItem<% } %> js-list_item" data-text="<%= text %>">
+                <i class="far fa-circle c-listIcon <% if(isDone){ %>p-doneItem__icon<% }else{ %>p-todoItem__icon<% } %> js-toggle-done"></i>
+                <% if(!editMode){ %>
+                <span class="p-listItem__text js-todo_list-text"><%= text %></span>
+                <% }else{ %>
+                <input type="text" class="js-todo_list-editArea" value="<%= text %>">
+                <% } %>
+                <i class="fas fa-trash-alt c-listIcon p-listItem__trash js-to-remove"></i>
+            </li>
+            <% } %>
+        </script>
+    </main>
+    <script src="./dist/js/bundle.js"></script>
+</body>
+
+</html>
