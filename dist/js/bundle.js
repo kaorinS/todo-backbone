@@ -15080,7 +15080,6 @@ var todoList = new TODOLIST([listItem1, listItem2]);
 // =====================================
 // todo
 var ListItemView = Backbone.View.extend({
-  // templateのhtmlを取得
   template: _.template($("#template-todo_list").html()),
   events: {
     "click .js-toggle-done": "toggleDone",
@@ -15093,6 +15092,7 @@ var ListItemView = Backbone.View.extend({
     this.render();
   },
   toggleDone: function () {
+    //  isDone反転
     this.model.set({ isDone: !this.model.get("isDone") });
   },
   remove: function () {
@@ -15105,5 +15105,32 @@ var ListItemView = Backbone.View.extend({
     return this;
   },
 });
+
+// todoリスト
+var ListView = Backbone.View.extend({
+  el: $("#js-todo_list"),
+  collection: todoList,
+  initialize: function () {
+    _.bindAll(this, "render");
+    this.collection.bind("add", this.appendListItem);
+    this.render();
+  },
+  addListItem: function (text) {
+    var model = new ListItem({ text: text });
+    this.collection.add(model);
+  },
+  appendListItem: function (model) {
+    var listItemView = new ListItemView({ model: model });
+    $(this.el).append(listItemView.el);
+  },
+  render: function () {
+    var that = this;
+    this.collection.each(function (model, i) {
+      that.appendListItem(model);
+    });
+    return this;
+  },
+});
+var listView = new ListView();
 
 },{"backbone":1,"jquery":2,"underscore":3}]},{},[4]);
