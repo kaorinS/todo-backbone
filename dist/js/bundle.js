@@ -15075,4 +15075,35 @@ var listItem2 = new ListItem({ text: "サンプルDONEタスク", isDone: true }
 // Collectionインスタンス化
 var todoList = new TODOLIST([listItem1, listItem2]);
 
+// =====================================
+// View
+// =====================================
+// todo
+var ListItemView = Backbone.View.extend({
+  // templateのhtmlを取得
+  template: _.template($("#template-todo_list").html()),
+  events: {
+    "click .js-toggle-done": "toggleDone",
+    "click .js-to-remove": "remove",
+  },
+  initialize: function () {
+    _.bindAll(this, "render", "toggleDone", "remove");
+    this.model.bind("change", this.render);
+    this.model.bind("destroy", this.remove);
+    this.render();
+  },
+  toggleDone: function () {
+    this.model.set({ isDone: !this.model.get("isDone") });
+  },
+  remove: function () {
+    $(this.el).remove();
+    return this;
+  },
+  render: function () {
+    var template = this.template(this.model.attributes);
+    $(this.el).html(template);
+    return this;
+  },
+});
+
 },{"backbone":1,"jquery":2,"underscore":3}]},{},[4]);
