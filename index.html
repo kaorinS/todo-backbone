@@ -57,7 +57,7 @@
         <script id="template-todo_list" type="text/template">
             <% if(isShow){ %>
             <li class="p-listItem <% if(isDone){ %>p-doneItem<% }else{ %>p-todoItem<% } %> js-list_item" data-text="<%= text %>">
-                <i class="far fa-circle c-listIcon <% if(isDone){ %>p-doneItem__icon<% }else{ %>p-todoItem__icon<% } %> js-toggle-done"></i>
+                <i class="<% if(isDone){ %>fas fa-check-circle<% }else{ %>far fa-circle<% } %>  c-listIcon <% if(isDone){ %>p-doneItem__icon<% }else{ %>p-todoItem__icon<% } %> js-toggle-done"></i>
                 <% if(!editMode){ %>
                 <span class="p-listItem__text js-todo_list-text"><%= text %></span>
                 <% }else{ %>
