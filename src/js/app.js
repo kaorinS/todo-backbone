@@ -81,24 +81,26 @@ var ListView = Backbone.View.extend({
   el: $("#js-todo_list"),
   collection: todoList,
   initialize: function () {
-    _.bindAll(this, "render");
-    this.collection.bind("add", this.appendListItem);
+    _.bindAll(this, "render", "addItem", "appendItem");
+    this.collection.bind("add", this.appendItem);
     this.render();
   },
-  addListItem: function (text) {
+  //   新しいModel追加用
+  addItem: function (text) {
     var model = new ListItem({ text: text });
     this.collection.add(model);
   },
-  appendListItem: function (model) {
+  //   モデルをインスタンス化して、DOMをulタグに追加する
+  appendItem: function (model) {
     var listItemView = new ListItemView({ model: model });
     $(this.el).append(listItemView.el);
   },
   render: function () {
+    //   collectionのmodelを1つ1つ取り出して、ulタグに追加する
     var that = this;
     this.collection.each(function (model, i) {
-      that.appendListItem(model);
+      this.appendItem(model);
     });
     return this;
   },
 });
-var listView = new ListView();
