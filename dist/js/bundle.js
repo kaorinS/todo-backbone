@@ -15135,4 +15135,41 @@ var ListView = Backbone.View.extend({
 });
 var listView = new ListView({ collection: todoList });
 
+// addTodo
+var AddTodo = Backbone.View.extend({
+  el: $("#js-add_todo"),
+  model: addForm,
+  template: _.template($("#template-form").html()),
+  events: {
+    "click .js-add-todo": "addTodo",
+  },
+  initialize: function () {
+    _.bindAll(this, "render", "addTodo");
+    this.model.bind("change", this.render);
+    this.render();
+  },
+  addTodo: function () {
+    e.preventDefault();
+
+    if (!$(".js-get-val").val() || $(".js-get-val").val() === "") {
+      this.model.set({ hasError: true, errorMsg: "入力が空です" });
+      $(".js-toggle-error").show();
+    } else {
+      this.model.set({
+        val: $(".js-get-val").val(),
+        hasError: false,
+        errorMsg: "",
+      });
+      $(".js-toggle-error").hide();
+      listView.addListItem(this.model.escape("val"));
+    }
+  },
+  render: function () {
+    var template = this.template(this.model.attributes);
+    $(this.el).html(template);
+    return this;
+  },
+});
+new AddTodo();
+
 },{"backbone":1,"jquery":2,"underscore":3}]},{},[4]);
