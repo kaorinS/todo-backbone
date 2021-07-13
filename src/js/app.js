@@ -30,3 +30,17 @@ var Search = Backbone.Model.extend({
   },
 });
 var search = new Search();
+
+// =====================================
+// Collection
+// =====================================
+// TODOリスト表示用
+var TODOLIST = Backbone.Collection.extend({
+  model: ListItem,
+});
+
+// タスクModelインスタンス化
+var listItem1 = new ListItem({ text: "サンプルTODOタスク" });
+var listItem2 = new ListItem({ text: "サンプルDONEタスク", isDone: true });
+// Collectionインスタンス化
+var todoList = new TODOLIST([listItem1, listItem2]);
