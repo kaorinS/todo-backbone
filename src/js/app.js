@@ -11,6 +11,7 @@ var ListItem = Backbone.Model.extend({
     text: "",
     isDone: false,
     editMode: false,
+    editText: "",
     isShow: true,
   },
 });
@@ -49,14 +50,30 @@ var todoList = new TODOLIST([listItem1, listItem2]);
 // View
 // =====================================
 // todo
+var keydownCode = "";
 var ListItemView = Backbone.View.extend({
   template: _.template($("#template-todo_list").html()),
   events: {
     "click .js-toggle-done": "toggleDone",
     "click .js-to-remove": "remove",
+    "click .js-todo_list-text": "startEdit",
+    "focus .js-todo_list-editArea": "selectAll",
+    "keydown .js-todo_list-editArea": "getKeydown",
+    "keyup .js-todo_list-editArea": "removeFocus",
+    "blur .js-todo_list-editArea": "endEdit",
   },
   initialize: function () {
-    _.bindAll(this, "render", "toggleDone", "remove");
+    _.bindAll(
+      this,
+      "render",
+      "toggleDone",
+      "remove",
+      "startEdit",
+      "selectAll",
+      "getKeydown",
+      "removeFocus",
+      "endEdit"
+    );
     this.model.bind("change", this.render);
     this.model.bind("destroy", this.remove);
     this.render();
@@ -66,8 +83,45 @@ var ListItemView = Backbone.View.extend({
     this.model.set({ isDone: !this.model.get("isDone") });
   },
   remove: function () {
-    $(this.el).remove();
+    $(this.el).fadeOut("slow", function () {
+      this.remove();
+    });
     return this;
+  },
+  startEdit: function () {
+    this.model.set({ editMode: true });
+    $(".js-todo_list-editArea").show().focus();
+    // console.log("this.model", this.model);
+    // console.log("keydownCode", this.model.get("keydownCode"));
+    // console.log("key", this.model.get("key"));
+  },
+  selectAll: function () {
+    $(".js-todo_list-editArea").select();
+  },
+  getKeydown: function (e) {
+    console.log("e.which", e.which);
+    console.log("e.keyCode", e.keyCode);
+    console.log("e.code", e.code);
+    console.log("e.key", e.key);
+    keydownCode = e.which;
+  },
+  removeFocus: function (e) {
+    if (
+      (13 === keydownCode && e.which === keydownCode) ||
+      (e.keyCode === 13 && e.shiftKey === true)
+    ) {
+      $(".js-todo_list-editArea").blur();
+    }
+  },
+  endEdit: function () {
+    var editArea = $(".js-todo_list-editArea");
+    var editAreaVal = editArea.val();
+    if (!editAreaVal || editAreaVal === "") {
+      editAreaVal = this.model.escape("text");
+    }
+    this.model.set({ editText: editAreaVal });
+    this.model.set({ text: this.model.escape("editText"), editMode: false });
+    editArea.hide();
   },
   render: function () {
     var template = this.template(this.model.attributes);
