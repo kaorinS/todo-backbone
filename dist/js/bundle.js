@@ -15042,6 +15042,7 @@ var ListItem = Backbone.Model.extend({
     isDone: false,
     editMode: false,
     editText: "",
+    keydownCode: "",
     isShow: true,
   },
 });
@@ -15131,8 +15132,7 @@ var ListItemView = Backbone.View.extend({
   },
   getKeydown: function (e) {
     // e.whichは本来、非推奨
-    // keyEvent中にthis.model.set()を使うと、挙動がおかしくなる(勝手にフォーカスが外れる)ため、外にvar keydownCodeを定義して、そこにe.whichの値を入れることに
-    // 関数を外に出してみても解決できなかった
+    // 引数(e)をthis.model.set()に入れると動作が止まるため、変数を使用
     // console.log("e.which", e.which);
     // console.log("e.keyCode", e.keyCode);
     // console.log("e.code", e.code);
@@ -15197,6 +15197,7 @@ var listView = new ListView({ collection: todoList });
 var AddTodo = Backbone.View.extend({
   el: $("#js-add_todo"),
   model: addForm,
+  collection: todoList,
   template: _.template($("#template-form").html()),
   events: {
     "click .js-add-todo": "addTodo",
@@ -15229,5 +15230,45 @@ var AddTodo = Backbone.View.extend({
   },
 });
 new AddTodo();
+
+// search
+var SearchBox = Backbone.View.extend({
+  el: $("#js-search_box"),
+  model: search,
+  collection: todoList,
+  template: _.template($("#template-search").html()),
+  events: {
+    "keyup .js-search": "searchTodo",
+  },
+  initialize: function () {
+    _.bindAll(this, "render", "searchTodo");
+    this.render();
+  },
+  searchTodo: function () {
+    this.model.set({ val: $(".js-search").val() });
+    // エスケープ処理
+    var searchText = this.model.escape("val");
+
+    this.collection.each(function (model, i) {
+      model.set({ isShow: true });
+      var modelText = model.escape("text");
+      // 前方一致
+      // if (modelText && modelText.match(new RegExp("^" + searchText))) {
+      //   return this;
+      // }
+      // 部分一致
+      if (modelText.indexOf(searchText) > -1) {
+        return this;
+      }
+      model.set({ isShow: false });
+    });
+  },
+  render: function () {
+    var template = this.template(this.model.attributes);
+    $(this.el).html(template);
+    return this;
+  },
+});
+new SearchBox();
 
 },{"backbone":1,"jquery":2,"underscore":3}]},{},[4]);
