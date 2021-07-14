@@ -15197,7 +15197,6 @@ var listView = new ListView({ collection: todoList });
 var AddTodo = Backbone.View.extend({
   el: $("#js-add_todo"),
   model: addForm,
-  collection: todoList,
   template: _.template($("#template-form").html()),
   events: {
     "click .js-add-todo": "addTodo",
@@ -15207,7 +15206,7 @@ var AddTodo = Backbone.View.extend({
     this.model.bind("change", this.render);
     this.render();
   },
-  addTodo: function () {
+  addTodo: function (e) {
     e.preventDefault();
 
     if (!$(".js-get-val").val() || $(".js-get-val").val() === "") {
