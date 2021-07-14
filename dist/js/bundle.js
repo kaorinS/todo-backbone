@@ -15080,6 +15080,7 @@ var todoList = new TODOLIST([listItem1, listItem2]);
 // View
 // =====================================
 // todo
+// keydownCodeは中の関数で使う
 var keydownCode = "";
 var ListItemView = Backbone.View.extend({
   template: _.template($("#template-todo_list").html()),
@@ -15129,10 +15130,13 @@ var ListItemView = Backbone.View.extend({
     $(".js-todo_list-editArea").select();
   },
   getKeydown: function (e) {
-    console.log("e.which", e.which);
-    console.log("e.keyCode", e.keyCode);
-    console.log("e.code", e.code);
-    console.log("e.key", e.key);
+    // e.whichは本来、非推奨
+    // keyEvent中にthis.model.set()を使うと、挙動がおかしくなる(勝手にフォーカスが外れる)ため、外にvar keydownCodeを定義して、そこにe.whichの値を入れることに
+    // 関数を外に出してみても解決できなかった
+    // console.log("e.which", e.which);
+    // console.log("e.keyCode", e.keyCode);
+    // console.log("e.code", e.code);
+    // console.log("e.key", e.key);
     keydownCode = e.which;
   },
   removeFocus: function (e) {
